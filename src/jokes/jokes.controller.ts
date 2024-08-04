@@ -1,6 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { JokesService } from './jokes.service';
-import { CreateJokeDto } from './jokes.dto';
+import { CreateJokeDto, UpdateJokeDto } from './jokes.dto';
 
 @Controller('jokes')
 export class JokesController {
@@ -19,6 +27,14 @@ export class JokesController {
   @Delete(':id')
   async deleteJoke(@Param('id') id: string) {
     return this.jokesService.deleteJoke(id);
+  }
+
+  @Put(':id')
+  async updateJoke(
+    @Param('id') id: string,
+    @Body() updateJokeDto: UpdateJokeDto,
+  ) {
+    return this.jokesService.updateJoke(id, updateJokeDto);
   }
 
   @Get('types')

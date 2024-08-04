@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { Jokes } from './jokes.model';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateJokeDto } from './jokes.dto';
+import { CreateJokeDto, UpdateJokeDto } from './jokes.dto';
 
 export interface Joke {
-  id: number;
+  // _id: string;
   type: string;
   content: string;
 }
@@ -33,9 +33,9 @@ export class JokesService {
     return this.jokesModel.findByIdAndDelete(id);
   }
 
-  //   async update(id: string, updateJokeDto: UpdateJokeDto): Promise<Jokes> {
-  //     return this.jokesModel.findByIdAndUpdate(id, updateJokeDto, { new: true });
-  //   }
+  async updateJoke(id: string, updateJokeDto: UpdateJokeDto): Promise<Jokes> {
+    return this.jokesModel.findByIdAndUpdate(id, updateJokeDto, { new: true });
+  }
 
   getJokeTypes(): string[] {
     return this.jokeTypes;
@@ -51,7 +51,8 @@ export class JokesService {
   //     return newJoke;
   //   }
 
-  getAllJokes(): Joke[] {
-    return this.jokes;
+  async getAllJokes(): Promise<Joke[]> {
+    const jokes = await this.jokesModel.find().exec();
+    return jokes;
   }
 }
