@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { JokesModule } from './jokes/jokes.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './app.config'; // Import the configuration function
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -13,9 +13,13 @@ import { MongooseModule } from '@nestjs/mongoose';
       envFilePath: '.env', // Specify the path to the .env file
       load: [appConfig], // Load the configuration file
     }),
-    MongooseModule.forRoot(
-      'mongodb+srv://kalum:7U3DjJP1SWJoZfPV@dev.wcm4dwa.mongodb.net/jokes-dev?retryWrites=true&w=majority&appName=dev',
-    ), // Replace with your MongoDB URI
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('mongoDbUri'),
+      }),
+      inject: [ConfigService],
+    }),
     JokesModule,
   ],
   controllers: [AppController],
